@@ -2,6 +2,7 @@ const Conversation = require("../models/conversationModel");
 const Message = require("../models/messageModel");
 const Post = require("../models/postModel");
 const User = require("../models/userModel");
+const cloudinary = require("../utils/cloudinary");
 
 const sendmessage = async (req, res) => {
     try {
@@ -14,7 +15,7 @@ const sendmessage = async (req, res) => {
         if (!receiver) {
             return res.status(404).json({ error: "User not found" });
         }
-
+        const sender = await User.findById(senderId);
         let conversation = await Conversation.findOne({
             members: { $all: [senderId, receiverId] },
         });
@@ -22,6 +23,9 @@ const sendmessage = async (req, res) => {
             conversation = await Conversation.create({
                 members: [senderId, receiverId],
             });
+            sender.conversations.push(conversation._id);
+            receiver.conversations.push(conversation._id);
+            await Promise.all([sender.save(), receiver.save()]);
         }
         const newMessage = await Message.create({
             content: message,
@@ -39,6 +43,47 @@ const sendmessage = async (req, res) => {
     }
 };
 
+const sendImage = async (req, res) => {
+    const { receiverId, type="image" } = req.body;
+    let { image } = req.body;
+    const senderId = req.user._id;
+    if (!image || !receiverId) {
+        return res.status(400).json({ error: "Please provide all fields" });
+    }
+    const receiver = await User.findById(receiverId);
+    if (!receiver) {
+        return res.status(404).json({ error: "User not found" });
+    }
+    const sender = await User.findById(senderId);
+        let conversation = await Conversation.findOne({
+            members: { $all: [senderId, receiverId] },
+        });
+        if (!conversation) {
+            conversation = await Conversation.create({
+                members: [senderId, receiverId],
+            });
+            sender.conversations.push(conversation._id);
+            receiver.conversations.push(conversation._id);
+            await Promise.all([sender.save(), receiver.save()]);
+        }
+        if(image){
+            const imgUrl = await cloudinary.uploader.upload(image, {
+                folder: "posts",
+                width: 300,
+            });
+            image = imgUrl.secure_url;
+        }
+        const newMessage = await Message.create({
+            content: image,
+            sender: senderId,
+            type,
+        });
+        conversation.messages.push(newMessage._id);
+        conversation.lastMessage = newMessage._id;
+        await conversation.save();
+        return res.status(200).json(newMessage);
+};
+
 const getMessages = async (req, res) => {
     try {
         const cId = req.params.cId;
@@ -52,6 +97,25 @@ const getMessages = async (req, res) => {
         return res.status(200).json(conversation.messages);
     } catch (error) {
         console.log("Error in getMessages", error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+const getAllConversations = async (req, res) => {
+    try {
+        const user = await User.findById(req.user._id).populate({ path: "conversations", populate: { path: "members", select: ["username", "name", "profilePic", "_id"] }}).populate({path:"conversations", populate:{path:"lastMessage"}});
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+        if (!user.conversations) {
+            return res.status(200).json([]);
+        }
+        user.conversations.map((conversation) => {
+            conversation.members.pull(req.user._id);
+        })
+        return res.status(200).json(user.conversations.sort((a,b) => b.lastMessage.createdAt - a.lastMessage.createdAt));
+    } catch (error) {
+        console.log("Error in getAllConversations", error);
         return res.status(500).json({ error: "Internal server error" });
     }
 };
@@ -117,7 +181,7 @@ const searchConversationUser = async (req, res) => {
         const { key } = req.query;
         const user = await User.findById(userId).populate({
             path: "linked",
-            select: ["email", "name", "username", "profilePic","_id"],
+            select: ["email", "name", "username", "profilePic", "_id"],
         });
         if (!user) {
             return res.status(404).json({ error: "User not found" });
@@ -132,4 +196,4 @@ const searchConversationUser = async (req, res) => {
 }
 
 
-module.exports = { sendmessage, getMessages, getConversation, sendPost, searchConversationUser };
+module.exports = { sendmessage, getMessages, getConversation, sendPost, searchConversationUser, getAllConversations, sendImage };

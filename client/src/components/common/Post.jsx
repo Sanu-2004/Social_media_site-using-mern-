@@ -7,14 +7,16 @@ import { LikePostHook } from "../../Hooks/LikePost.hook";
 import { BiSolidLike } from "react-icons/bi";
 import { CommentPostHook } from "../../Hooks/CommentPost.hook";
 import { Link } from "react-router-dom";
+import SharePost from "./SharePost";
 
 const Post = ({ post }) => {
   const { user } = useUserContext();
-  const [liked, setLiked] = useState(post.likes.includes(user.id));
+  const [liked, setLiked] = useState(post?.likes.includes(user.id) || false);
   const { useLikePost } = LikePostHook();
   const [text, setText] = useState("");
   const [active, setActive] = useState(false);
   const { useCommentPost } = CommentPostHook();
+  const [share, setShare] = useState(false);
 
   const likePost = async () => {
     try {
@@ -43,42 +45,42 @@ const Post = ({ post }) => {
     <div className="border-b last:border-0 pb-3">
       <div className="w-full p-6 flex gap-2">
         <img
-          src={post.postedBy.profilePic}
+          src={post?.postedBy.profilePic}
           className="w-[50px] h-[50px] rounded-full"
         />
         <div className="flex items-center w-72">
           <div className="flex flex-col justify-start">
-            <span className="pl-2 text-lg">{post.postedBy.name}</span>
+            <span className="pl-2 text-lg">{post?.postedBy.name}</span>
             <span className="pl-2 text-two text-sm">
-              @{post.postedBy.username}
+              @{post?.postedBy.username}
             </span>
           </div>
         </div>
       </div>
       <div className="flex flex-col justify-center">
-        <Link to={`/post/${post._id}`}>
-        <div className="w-auto h-auto flex flex-col justify-center items-center px-6">
-          {post.text && (
-            <p className="flex px-2 text-sm w-full">{post.text}</p>
-          )}
-          {post.image && (
-            <img
-              src={post.image}
-              className="w-full min-h-20 pt-4"
-              alt="Image not found"
-            />
-          )}
-          <div className="text-two text-sm w-full px-7 py-2 flex justify-between">
-            <p className="flex items-center gap-2">
-              <BiLike /> {post.likes.length}
-            </p>
-            <p className="flex items-center gap-2">
-              <FaRegComment /> {post.comments.length}
-            </p>
-            <p>{new Date(post.createdAt).toLocaleDateString()}</p>
+        <Link to={`/post/${post?._id}`}>
+          <div className="w-auto h-auto flex flex-col justify-center items-center px-6">
+            {post?.text && (
+              <p className="flex px-2 text-sm w-full">{post?.text}</p>
+            )}
+            {post?.image && (
+              <img
+                src={post?.image}
+                className="w-full min-h-20 pt-4 rounded-3xl"
+                alt="Image not found"
+              />
+            )}
+            <div className="text-two text-sm w-full px-7 py-2 flex justify-between">
+              <p className="flex items-center gap-2">
+                <BiLike /> {post?.likes.length}
+              </p>
+              <p className="flex items-center gap-2">
+                <FaRegComment /> {post?.comments.length}
+              </p>
+              <p>{new Date(post?.createdAt).toLocaleDateString()}</p>
+            </div>
           </div>
-        </div>
-          </Link>
+        </Link>
         <div className="w-full px-3">
           <div className="w-full flex justify-around items-center bg-base-300 text-2xl px-8 py-2 rounded-full cursor-pointer">
             <p onClick={likePost}>{liked ? <BiSolidLike /> : <BiLike />}</p>
@@ -86,10 +88,16 @@ const Post = ({ post }) => {
             <FaRegComment
               onClick={() => {
                 setActive(!active);
+                setShare(false);
               }}
             />
             <div className="divider divider-horizontal"></div>
-            <IoMdShareAlt />
+            <IoMdShareAlt
+              onClick={() => {
+                setShare(!share);
+                setActive(false);
+              }}
+            />
           </div>
           {active && (
             <form className="py-2" onSubmit={commentPost}>
@@ -108,6 +116,9 @@ const Post = ({ post }) => {
                 </button>
               </label>
             </form>
+          )}
+          {share && (
+            <SharePost post={post} />
           )}
         </div>
       </div>

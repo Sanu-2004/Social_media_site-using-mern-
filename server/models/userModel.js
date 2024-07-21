@@ -52,6 +52,13 @@ const userSchema = new mongoose.Schema({
             default: []
         }
     ],
+    conversations: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Conversation',
+            default: []
+        }
+    ]
 },{timestamps: true});
 
 userSchema.index({ name: 'text', username: 'text' });

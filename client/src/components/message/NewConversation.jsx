@@ -1,9 +1,14 @@
 import React from 'react'
+import { useConversationContext } from '../../Context/ConversationContext'
 
 const NewConversation = ({user}) => {
+  const {setConversation} = useConversationContext()
+  const conv={}
+  conv.members=[user]
+  conv._id=user._id
   return (
     <div className='snap-center border-b last:border-0'>
-      <div className="flex items-center justify-between my-2 p-3">
+      <div className="flex items-center justify-between my-2 p-3" onClick={()=>{setConversation(conv)}}>
                 <div className="flex gap-3 items-center w-full">
                   <img
                     src={user.profilePic}

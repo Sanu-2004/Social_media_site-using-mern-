@@ -4,38 +4,27 @@ import { useConversationContext } from '../../Context/ConversationContext';
 ;
 
 
-const Conversation = ({u}) => {
-  const [lastmsg, setLastmsg] = useState([]);
+const Conversation = ({c}) => {
   const {setConversation} = useConversationContext()
-  useEffect(() => {
-    const getLastMsg = async () => {
-      try {
-        const res = await fetch(`/api/message/getconversation?friend=${u._id}`, {
-          credentials: "include",
-        });
-        const data = await res.json();
-        setLastmsg(data);
-      } catch (error) {
-        console.log("Error in getLastMsg", error);
-      }
-    };
-    getLastMsg();
-  }, [u])
+  
   const handleClick = () => {
-    setConversation({id: u._id, name: u.name, profilePic: u.profilePic, username: u.username, cId: lastmsg._id})
+    setConversation(c)
   }
   return (
     <div className='snap-center border-b last:border-0'>
       <div className="flex items-center justify-between my-2 p-3">
-                <div className="flex gap-3 items-center w-full" onClick={handleClick}>
+                <div className="flex gap-3 items-center w-full cursor-pointer" onClick={handleClick}>
                   <img
-                    src={u.profilePic}
+                    src={c.members[0].profilePic}
                     className="w-12 h-12 rounded-full"
                   />
                   <div className="flex flex-col">
-                  <span className="pl-2">{u.name}</span>
-                  <span className="pl-2 text-two text-sm">@{u.username}</span>
-                  <span className='pl-2 overflow-hidden h-5 text-sm'>{lastmsg.lastMessage?.sender === u._id? (u.name.split(" ")[0]):"you"}: {lastmsg.lastMessage?.content} </span>
+                  <span className="pl-2">{c.members[0].name}</span>
+                  <span className="pl-2 text-two text-sm">@{c.members[0].username}</span>
+                  <span className='pl-2 overflow-hidden h-5 text-sm'>{c.lastMessage?.sender === c.members[0]._id? (c.members[0].name.split(" ")[0]):"you"}: {" "}
+                    {c.lastMessage?.type === "image" && "Shared a Image"}
+                    {c.lastMessage?.type === "text" && c.lastMessage?.content}
+                    {c.lastMessage?.type === "post" && "Shared a Post"} </span>
                   </div>
                 </div>
                 <button className="btn rounded-full"><IoIosVideocam /></button>

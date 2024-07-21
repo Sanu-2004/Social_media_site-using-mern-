@@ -36,6 +36,7 @@ const PostPage = () => {
         
       </div>
       <div className="pb-16 md:pb-5">
+        {data && data.comments.length === 0 && (<p className="w-full text-center p-5">Be the First One to Comment</p>)}
         {data && data.comments.map((comment) => (
           <Comment key={comment._id} comment={comment} deleteComment={deleteComment} />
         ))}

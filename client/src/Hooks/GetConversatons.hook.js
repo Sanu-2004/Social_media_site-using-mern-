@@ -1,19 +1,18 @@
-import { useState } from "react";
+import { useConversationContext } from "../Context/ConversationContext";
 
 export const getConversationsHook = () => {
-    const [conversations, setConversations] = useState([]);
+    const { setAllConversations } = useConversationContext();
     const useGetConversations = async () => {
         try {
-            const res = await fetch("/api/message/getconversation", {
+            const res = await fetch("api/message/getallconversation", {
                 credentials: "include",
             });
             const data = await res.json();
-            await setConversations(data);
+            setAllConversations(data);
             return data;
         } catch (error) {
             console.log("Error in getConversations", error);
-
         };
     }
-    return { conversations, useGetConversations };
+    return { useGetConversations };
 }

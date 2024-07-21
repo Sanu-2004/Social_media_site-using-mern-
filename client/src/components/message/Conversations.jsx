@@ -2,14 +2,13 @@ import React, { useEffect, useMemo, useState } from "react";
 import Conversation from "./Conversation";
 import { IoSearch } from "react-icons/io5";
 import NewConversation from "./NewConversation";
-import { getConversationsHook } from "../../Hooks/GetConversatons.hook";
 import { SearchConversationHook } from "../../Hooks/searchConversation.hook";
+import { useConversationContext } from "../../Context/ConversationContext";
 
 const Conversations = () => {
   const [search, setSearch] = useState("");
   const {users, searchConvertationUser} = SearchConversationHook();
-  const { useGetConversations } = getConversationsHook();
-  const [conversations, setConversations] = useState([]);
+  const {allConversations} = useConversationContext();
 
   useEffect(() => {
    searchConvertationUser(search);
@@ -53,14 +52,14 @@ const Conversations = () => {
           </div>
         ) : (
           <div>
-            {users.length === 0 && (
+            {allConversations?.length === 0 && (
               <p className="text-center">No Conversations Found</p>
             )}
-            {users &&
-              users.map((u) => (
+            {allConversations &&
+              allConversations.map((c) => (
                 <Conversation
-                  key={u._id}
-                  u={u}
+                  key={c._id}
+                  c={c}
                 />
               ))}
           </div>
