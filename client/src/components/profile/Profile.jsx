@@ -1,73 +1,135 @@
-import React from "react";
-import NavBottom from "../home/NavBottom";
+import React, { useEffect, useState } from "react";
 import Header from "../common/Header";
 import Post from "../common/Post";
 import Account from "../common/Account";
+import { useParams } from "react-router-dom";
+import { useUserContext } from "../../Context/UserContext";
+import { LikeUserHook } from "../../Hooks/LinkUser.hook";
+import { set } from "mongoose";
 
 const Profile = () => {
+  const [postActive, setPostActive] = useState("post");
+  const { username } = useParams();
+  const [profile, setProfile] = useState(null);
+  const { user } = useUserContext();
+  const { useLikeUser } = LikeUserHook();
+  const [isLinked, setIsLinked] = useState(user.linked.includes(profile?._id));
+
+  const handleLink = async () => {
+    await useLikeUser(profile?._id);
+    setIsLinked(!isLinked);
+  };
+
+  useEffect(() => {
+    const fetchPoifle = async () => {
+      try {
+        if (username) {
+          const res = await fetch(`/api/user/profile/${username}`, {
+            credentials: "include",
+          });
+          const data = await res.json();
+          setProfile(data);
+          setIsLinked(user.linked.includes(data._id));
+        } else {
+          const res = await fetch(`/api/user/profile/${user.username}`, {
+            credentials: "include",
+          });
+          const data = await res.json();
+          setProfile(data);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetchPoifle();
+  }, [username]);
   return (
     <div className="h-svh lg:w-[500px] md:w-2/3 w-full relative md:p-2  overflow-auto">
       <Header />
-      <div>
-        <div className="flex justify-between items-center p-4">
-          <div className="w-1/2">
-            <img
-              src="https://picsum.photos/300/300"
-              alt="profile"
-              className="w-28 h-28 rounded-full"
-            />
-            <div className="px-4 py-1">
-            <h2 className="text-lg">John Doe</h2>
-            <p className="text-two">@johndoe</p>
-            </div>
-          </div>
-            <div className="w-1/2 flex justify-center items-center p-2">
-          <div className="stat place-items-center w-1/2">
-            <div className="stat-title">Posts</div>
-            <div className="stat-value">5</div>
-          </div>
-          <div className="stat place-items-center w-1/2">
-            <div className="stat-title">Linkers</div>
-            <div className="stat-value">2</div>
-            </div>
-          </div>
-        </div>
-        <div className="px-6 w-5/6">
-          <p>
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Placeat
-            nam voluptas blanditiis eum? Numquam voluptatibus quis ad impedit,
-            soluta repudiandae! Aspernatur praesentium minus hic nesciunt
-            recusandae, nam, mollitia laborum rem incidunt, eveniet deleniti?
-          </p>
-        </div>
-        <div className="px-6 py-2 w-5/6 underline hover:text-blue-600">
-          <a href="#">
-            Lorem, ipsum dolor sit amet consectetur 
-          </a>
-        </div>
-        <div className="w-full p-2 flex justify-end">
-          <button className="btn btn-outline rounded-full">Edit Profile</button>
-        </div>
-        <div className="flex w-full justify-around py-2">
-            <span className="text-lg px-6 underline">Posts</span>
-            <span className="text-lg px-6">Linkers</span>
-        </div>
+      {profile && (
         <div>
-            {/* <Post />
-            <Post />
-            <Post /> */}
-            <div className="py-2 px-4">
-            <Account />
-            <Account />
-            <Account />
-            <Account />
-            <Account />
-            <Account />
-            <Account />
+          <div className="flex justify-between items-center p-4">
+            <div className="w-1/2">
+              <img
+                src={profile.profilePic}
+                alt="profile"
+                className="w-28 h-28 rounded-full"
+              />
+              <div className="px-4 py-1">
+                <h2 className="text-lg">{profile.name}</h2>
+                <p className="text-two">@{profile.username}</p>
+              </div>
             </div>
+            <div className="w-1/2 flex justify-center items-center p-2">
+              <div className="stat place-items-center w-1/2">
+                <div className="stat-title">Posts</div>
+                <div className="stat-value">{profile.posts.length}</div>
+              </div>
+              <div className="stat place-items-center w-1/2">
+                <div className="stat-title">Linkers</div>
+                <div className="stat-value">{profile.linkers.length}</div>
+              </div>
+            </div>
+          </div>
+          <div className="px-6 w-5/6">
+            <p>{profile.bio}</p>
+          </div>
+          <div className="px-6 py-2 w-5/6 underline hover:text-blue-600">
+            <a href={profile.link} target="blank">
+              {profile.link}
+            </a>
+          </div>
+          <div className="w-full p-2 flex justify-end">
+            {user.username === profile.username ? (
+              <button className="btn btn-outline rounded-full">Edit Profile</button>
+            ) : (
+              <button className="btn bg-secondary text-primary hover:text-secondary rounded-full" onClick={handleLink}>
+                {isLinked ? "Linked" : "Link"}
+              </button>
+            )}
+          </div>
+          <div className="flex w-full justify-around py-2">
+            <span
+              className={`text-lg px-6 cursor-pointer hover:underline ${
+                postActive==="post" && "underline"
+              }`}
+              onClick={() => {
+                setPostActive("post");
+              }}
+            >
+              Posts
+            </span>
+            <span
+              className={`text-lg px-6 cursor-pointer hover:underline ${
+                postActive==="linker" && "underline"
+              }`}
+              onClick={() => {
+                setPostActive("linkers");
+              }}
+            >
+              Linkers
+            </span>
+          </div>
+          <div>
+            {postActive==="post" ? (
+              <div className="py-2 px-4">
+                {profile.posts.length === 0 && (<p className="w-full flex justify-center">No Post Found</p>)}
+                {profile.posts.map((post) => (
+                  <Post key={post._id} post={post} />
+                ))}
+              </div>
+            ) : (
+              <div className="py-2 px-4">
+                {profile.linkers.length === 0 && (<p className="w-full flex justify-center">No Linker Found</p>)}
+                {profile.linkers.map((linker) => (
+                  <Account key={linker._id} user={linker} showLink={false}  />
+                ))}
+              </div>
+            )}
             
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

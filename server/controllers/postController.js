@@ -1,6 +1,6 @@
 const Post = require("../models/postModel");
 const User = require("../models/userModel");
-const { cloudinary_js_config } = require("../utils/cloudinary");
+const cloudanary = require("../utils/cloudinary");
 
 const createPost = async (req, res) => {
     try {
@@ -14,14 +14,17 @@ const createPost = async (req, res) => {
             return res.status(404).json({ error: "User not found" });
         }
         if(image){
-            const imgUrl = image ? await cloudinary_js_config(image,{folder:"posts"}) : null;
+            const imgUrl = await cloudanary.uploader.upload(image,{
+                folder:"posts",
+                width: 500,
+            });
             image = imgUrl.secure_url;
         }
         const post = new Post({
-            text,
-            image,
             postedBy: req.user._id,
         });
+        if (text) post.text = text;
+        if (image) post.image = image;
         user.posts.push(post._id);
 
         await Promise.all([post.save(), user.save()]);
@@ -47,10 +50,11 @@ const getPosts = async (req, res) => {
                 post.postedBy.posts = undefined;
                 post.postedBy.linked = undefined;
                 post.postedBy.linkers = undefined;
+                post.postedBy.bio = undefined;
                 return post;
             });
         }
-        return res.status(200).json(allPost);
+        return res.status(200).json(allPost.sort((a,b) => b.createdAt - a.createdAt));
     } catch (error) {
         console.log("Error in getPosts", error);
         return res.status(500).json({ error: "Internal server error" });
@@ -148,12 +152,6 @@ const deleteComment = async (req, res) => {
         const post = await Post.findById(postId);
         if (!post) {
             return res.status(404).json({ error: "Post not found" });
-        }
-        if (!post.comments.id(commentId)) {
-            return res.status(404).json({ error: "Comment not found" });
-        }
-        if (post.comments.id(commentId).commentedBy.toString() !== req.user._id.toString()) {
-            return res.status(401).json({ error: "Unauthorized" });
         }
         post.comments.pull(commentId);
         await post.save();

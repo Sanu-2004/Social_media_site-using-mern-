@@ -1,6 +1,7 @@
 import React from 'react'
 import SignupFrom from './SignupFrom'
 
+
 const Signup = () => {
   return (
     <div className="flex justify-center items-center h-screen w-screen">

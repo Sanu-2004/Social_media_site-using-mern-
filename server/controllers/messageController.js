@@ -46,6 +46,9 @@ const getMessages = async (req, res) => {
         if (!conversation) {
             return res.status(404).json({ error: "Conversation not found" });
         }
+        if (!conversation.messages) {
+            return res.status(200).json([]);
+        }
         return res.status(200).json(conversation.messages);
     } catch (error) {
         console.log("Error in getMessages", error);
@@ -53,26 +56,17 @@ const getMessages = async (req, res) => {
     }
 };
 
-const getConversations = async (req, res) => {
+const getConversation = async (req, res) => {
     try {
         const userId = req.user._id;
-        const conversations = await Conversation.find({ members: userId }).populate("members").populate("lastMessage");
-        if (!conversations) {
+        const friend = req.query.friend;
+        const conversation = await Conversation.findOne({ members: { $all: [userId, friend] } }).populate("lastMessage");
+        if (!conversation) {
             return res.status(404).json({ error: "Conversations not found" });
         }
-        conversations.map((conversation) => {
-            conversation.members.map((member) => {
-                member.password = undefined;
-                member.bio = undefined;
-                member.linkers = undefined;
-                member.linked = undefined;
-                member.posts = undefined;
-                member.link = undefined;
-            });
-        });
-        return res.status(200).json(conversations);
+        return res.status(200).json(conversation);
     } catch (error) {
-        console.log("Error in getConversations", error);
+        console.log("Error in getConversation", error);
         return res.status(500).json({ error: "Internal server error" });
     }
 };
@@ -117,5 +111,25 @@ const sendPost = async (req, res) => {
     }
 }
 
+const searchConversationUser = async (req, res) => {
+    try {
+        const userId = req.user._id;
+        const { key } = req.query;
+        const user = await User.findById(userId).populate({
+            path: "linked",
+            select: ["email", "name", "username", "profilePic","_id"],
+        });
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+        let linkedUsers = user.linked.filter((u) => u.name.includes(key));
+        return res.status(200).json(linkedUsers);
+    } catch (error) {
+        console.log("Error in searchLinkedUser", error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
 
-module.exports = { sendmessage, getMessages, getConversations, sendPost };
+}
+
+
+module.exports = { sendmessage, getMessages, getConversation, sendPost, searchConversationUser };

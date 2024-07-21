@@ -54,6 +54,8 @@ const userSchema = new mongoose.Schema({
     ],
 },{timestamps: true});
 
+userSchema.index({ name: 'text', username: 'text' });
+
 const User = mongoose.model('User', userSchema);
 
 module.exports = User;

@@ -10,24 +10,26 @@ import CreateNewPassword from './components/auth/forgetPassword/CreateNewPasswor
 import MessagePage from './components/message/MessagePage'
 import Profile from './components/profile/Profile'
 import NavBottom from './components/home/NavBottom'
-import { Route, Routes } from 'react-router-dom'
+import { Navigate, Route, Routes } from 'react-router-dom'
 import Search from './components/search/Search'
+import { useUserContext } from './Context/UserContext'
+import { useThemeContext } from './Context/ThemeContext'
 
 const App = () => {
+  const {user}  = useUserContext();
+  const {theme} = useThemeContext();
   return (
-    <div className='bg-primary text-secondary' data-theme="dark">
+    <div className='bg-primary text-secondary' data-theme={theme}>
       <Toaster />
       <div className='flex justify-center items-center h-screen overflow-hidden'>
       {/* <Navbar /> */}
       <Routes>
-        <Route path='/' element={<Home />} />
-        <Route path='/login' element={<Login />} />
-        <Route path='/signup' element={<Signup />} />
-        <Route path='/forget-password' element={<ForgetPassword />} />
+        <Route path='/login' element={!user?<Login />:<Navigate to="/" />} />
+        <Route path='/signup' element={!user?<Signup />:<Navigate to="/" />} />
+        <Route path='/forget-password' element={!user?<ForgetPassword />:<Navigate to="/" />} />
         <Route path='/create-new-password' element={<CreateNewPassword />} />
-        <Route path='/message' element={<MessagePage />} />
-        <Route path='/profile' element={<Profile />} />
-        <Route path='/search' element={<Search />} />
+        <Route path="*" element={user?<Home />:<Navigate to="/login" />} />
+        
       </Routes>
         {/* <div className='hidden lg:flex h-[90vh] w-1/4 border-l'>
       <SearchPage />

@@ -21,14 +21,16 @@ const postSchema = new mongoose.Schema({
     ],
     comments: [
         {
-            text: String,
+            text: {
+                type: String
+            },
             commentedBy: {
                 type: mongoose.Schema.Types.ObjectId,
                 ref: 'User'
-            },
-            default: []
+            }
         }
     ],
+    
 },{timestamps: true});
 
 const Post = mongoose.model('Post', postSchema);

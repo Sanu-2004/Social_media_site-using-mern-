@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { FaCircleNotch } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { SignupHook } from "../../../Hooks/Signup.hook";
 
 const SignupFrom = () => {
+  const {loading, useSignup} = SignupHook();
   const [details, setDetails] = useState({
     fullName: "",
     email: "",
@@ -13,7 +15,7 @@ const SignupFrom = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(details);
+    useSignup(details)
   }
 
   return (
@@ -82,7 +84,9 @@ const SignupFrom = () => {
               Already have an account.
               <span className="text-secondary"> Login</span>
             </Link>
-            <button className="btn btn-outline lg:text-xl" onClick={handleSubmit}>Create Account</button>
+            <button className="btn btn-outline lg:text-xl" onClick={handleSubmit}>
+              {loading? (<span className="loading loading-spinner loading-md"></span>) : "Create Account"}
+              </button>
           </form>
         </div>
       </div>

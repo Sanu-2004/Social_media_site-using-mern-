@@ -11,14 +11,16 @@ const regusername = /^(?=[a-zA-Z0-9._]{8,20}$)(?!.*[_.]{2})[^_.].*[^_.]$/;
 
 const signup = async (req, res) => {
     try {
-        const { name,  email, password, confirmPassword } = req.body;
+        const { name, email, username, password, confirmPassword } = req.body;
         if (!name || !email || !password || !username || !confirmPassword) {
             return res.status(400).json({ error: "All fields are required" });
         }
         if (!regEmail.test(email)) {
             return res.status(400).json({ error: "Invalid email address" });
         }
-        const username = email.split("@")[0];
+        if (!regusername.test(username)) {
+            return res.status(400).json({ error: "Invalid username" });
+        }
         if (password.length < 8) {
             return res.status(400).json({ error: "Password must be at least 8 characters" });
         }
@@ -49,6 +51,11 @@ const signup = async (req, res) => {
             name: user.name,
             username: user.username,
             email: user.email,
+            linkers: user.linkers,
+            linked: user.linked,
+            profilePic: user.profilePic,
+            bio: user.bio,
+            link: user.link,
         });
 
     } catch (error) {
@@ -80,6 +87,11 @@ const login = async (req, res) => {
                     name: user.name,
                     username: user.username,
                     email: user.email,
+                    linkers: user.linkers,
+                    linked: user.linked,
+                    profilePic: user.profilePic,
+                    bio: user.bio,
+                    link: user.link,
                 });
             } else {
                 res.status(400).json({ error: "Invalid credentials" });
@@ -89,6 +101,16 @@ const login = async (req, res) => {
 
     } catch (error) {
         console.log("error in login" + error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+};
+
+const logout = async (req, res) => {
+    try {
+        res.clearCookie("token");
+        res.status(200).json({ message: "Logged out successfully" });
+    } catch (error) {
+        console.log("error in logout" + error);
         res.status(500).json({ error: "Internal Server Error" });
     }
 };
@@ -112,7 +134,7 @@ const fortgotPassword = async (req, res) => {
             otp
         });
     } catch (error) {
-        console.log("error in forgetpassword"+error);
+        console.log("error in forgetpassword" + error);
         res.status(500).json({ error: "Internal Server" });
     }
 };
@@ -135,7 +157,7 @@ const verifyOtp = async (req, res) => {
         if (!verified) {
             return res.status(400).json({ error: "Invalid OTP" });
         }
-        
+
         genToken(user._id, res);
         res.status(200).json({
             id: user._id,
@@ -144,11 +166,11 @@ const verifyOtp = async (req, res) => {
             email: user.email,
         });
     } catch (error) {
-        console.log("error in verifyOtp"+error);
+        console.log("error in verifyOtp" + error);
         res.status(500).json({ error: "Internal Server" });
     }
 };
 
 
 
-module.exports = { signup, login, fortgotPassword, verifyOtp };
+module.exports = { signup, login, fortgotPassword, verifyOtp, logout };

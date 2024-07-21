@@ -8,8 +8,8 @@ router.post('/createpost', authorizeUser, createPost);
 router.get('/getposts', authorizeUser, getPosts);
 router.get('/getpost/:id', authorizeUser, getPost);
 router.post('/deletepost/:id', authorizeUser, deletePost);
-router.post('/likepost/:id', authorizeUser, likePost);
+router.put('/likepost/:id', authorizeUser, likePost);
 router.post('/comment', authorizeUser, commentPost);
-router.post('/deletecomment', authorizeUser, deleteComment);
+router.delete('/deletecomment', authorizeUser, deleteComment);
 
 module.exports = router;
