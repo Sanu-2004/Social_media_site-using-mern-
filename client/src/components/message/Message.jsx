@@ -17,15 +17,15 @@ const Message = ({ msg }) => {
       };
       fetchPost();
     }
-  }, [msg])
+  }, [msg,m])
   return (
-    <div className={`w-full`} ref={m}>
+    <div className={`w-full`}>
       <div
         className={`w-full flex items-center p-2 justify-${
           user.id === msg.sender ? "end" : "start"
         }`}
       >
-        <div className="max-w-[80%]">
+        <div className="max-w-[80%]" ref={m}>
           {msg.type === "image" && (
             <img src={msg.content} className="rounded-3xl" />
           ) }

@@ -26,10 +26,9 @@ const App = () => {
       <Routes>
         <Route path='/login' element={!user?<Login />:<Navigate to="/" />} />
         <Route path='/signup' element={!user?<Signup />:<Navigate to="/" />} />
-        <Route path='/forget-password' element={!user?<ForgetPassword />:<Navigate to="/" />} />
-        <Route path='/create-new-password' element={<CreateNewPassword />} />
+        <Route path='/forget-password' element={!user?<ForgetPassword />:<Navigate to="/create-new-password" />} />
+        <Route path='/create-new-password' element={user ? <CreateNewPassword /> : <Navigate to="/forget-password" />} />
         <Route path="*" element={user?<Home />:<Navigate to="/login" />} />
-        
       </Routes>
         {/* <div className='hidden lg:flex h-[90vh] w-1/4 border-l'>
       <SearchPage />

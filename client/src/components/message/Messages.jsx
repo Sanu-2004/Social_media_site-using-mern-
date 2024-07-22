@@ -8,7 +8,7 @@ import { sendMessageHook } from "../../Hooks/SendMessage.hook";
 import AddImage from "../common/AddImage";
 import { IoMdClose } from "react-icons/io";
 import toast from "react-hot-toast";
-import { set } from "mongoose";
+import GetNewMessageHook from "../../Hooks/GetNewMessageHook";
 
 const Messages = () => {
   const { conversation, setConversation } = useConversationContext();
@@ -17,17 +17,29 @@ const Messages = () => {
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState(null);
   const { sendMessage, sendImage } = sendMessageHook();
-  const handleSend = () => {
-    if (!input && !image) return toast.error("Message can't be empty");
+  const [loading, setLoading] = useState(false);
+  const handleSend = async () => {
+    setLoading(true)
+    try{
+      if (!input && !image) return toast.error("Message can't be empty");
     if (image) {
-      sendImage(conversation, image);
+      await sendImage(conversation, image);
     }else{
-      sendMessage(conversation, input);
+      await sendMessage(conversation, input);
     }
     setInput("");
     setImage(null);
     setPreview(null);
+    }catch(error){
+      toast.error("Error Sending Message")
+    }finally{
+      setLoading(false)
+    }
+    
   };
+
+  GetNewMessageHook();
+
   useEffect(() => {
     const getMessages = async () => {
       try {
@@ -81,13 +93,15 @@ const Messages = () => {
                 <p
                   className="absolute top-0 right-4 p-4 text-white text-xl"
                   onClick={() => {
-                    setImage(null);
-                    setPreview(null);
+                    setImage(null)
+                    setPreview(null)
                   }}
                 >
                   <IoMdClose />
                 </p>
+                <div className="max-h-[70vh] overflow-auto justify-center w-full">
                 <img src={preview} alt="preview" className="w-full rounded-lg bg-transparent" />
+                </div>
               </div>
             )}
         <div className="p-4 pt-0">
@@ -105,8 +119,8 @@ const Messages = () => {
             />
             <div className="flex gap-2">
               <AddImage setImage={setImage} setPreview={setPreview} />
-            <button className="px-2 rounded-full" onClick={handleSend}>
-              <BsSend className="text-secondary" />
+            <button className="px-2 rounded-full" onClick={handleSend} disabled={loading}>
+              {loading ? (<div className="loading loading-spinner"></div>):<BsSend className="text-secondary" />}
             </button>
             </div>
           </label>

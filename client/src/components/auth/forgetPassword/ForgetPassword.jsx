@@ -1,7 +1,25 @@
-import React from "react";
-import { FaCircleNotch } from "react-icons/fa";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import { ForgetPasswordHook } from "../../../Hooks/ForgetPasswordHook";
 
 const ForgetPassword = () => {
+  const [email, setEmail] = useState("");
+  const [sent, setSent] = useState(false);
+  const [otp, setOtp] = useState("");
+  const { SendOTP, VerifyOtp } = ForgetPasswordHook();
+
+
+  const handleSendOTP = async (e) => {
+    e.preventDefault();
+    const success = SendOTP(email);
+    setSent(success);
+  };
+
+
+  const handleVerify = async (e) => {
+    e.preventDefault();
+    VerifyOtp(email, otp);
+  }
   return (
     <div className="w-screen h-screen flex justify-center items-center">
       <div className="flex flex-col gap-2 justify-center items-center w-full">
@@ -18,21 +36,27 @@ const ForgetPassword = () => {
               type="email"
               placeholder="example@email.com"
               className="input input-bordered w-full"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              disabled={sent}
             />
             <label className="label">OTP:</label>
             <input
               type="text"
               placeholder="******"
               className="input input-bordered w-full"
+              value={otp}
+              onChange={(e) => setOtp(e.target.value)}
+              disabled={!sent}
             />
-            <a
-              href="#"
+            <Link
+              to="/login"
               className="text-two text-xs md:text-sm  hover:underline flex gap-1 py-2"
             >
               Let's <span className="text-secondary"> Login</span>
-            </a>
-            <button className="btn btn-outline lg:text-xl">Send OTP</button>
-            <button className="btn lg:text-xl my-3" disabled="true">
+            </Link>
+            <button className="btn btn-outline lg:text-xl" disabled={sent} onClick={handleSendOTP}>Send OTP</button>
+            <button className="btn lg:text-xl my-3" disabled={!sent} onClick={handleVerify}>
               Verify
             </button>
           </form>

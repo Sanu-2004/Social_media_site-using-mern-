@@ -9,13 +9,12 @@ const postRoute = require('./routes/postRoute');
 const userRoute = require('./routes/userRoute');
 const messaageRoute = require('./routes/messageRoute');
 const notificatonRoute = require('./routes/notficationRoute');
+const { app, server } = require('./socket/socket');
 
 
 dotenv.config();
 const PORT = process.env.Port || 5000;
 
-
-const app = express();
 app.use(cors(
     {
         origin: "http://localhost:3000",
@@ -34,7 +33,7 @@ app.use("/api/message", messaageRoute);
 app.use("/api/notification", notificatonRoute);
 
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
     connectDB();
     console.log(`Server is running on port ${PORT}`);
 });

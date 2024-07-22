@@ -7,13 +7,12 @@ import { useConversationContext } from "../../Context/ConversationContext";
 
 const Conversations = () => {
   const [search, setSearch] = useState("");
-  const {users, searchConvertationUser} = SearchConversationHook();
-  const {allConversations} = useConversationContext();
+  const { users, searchConvertationUser } = SearchConversationHook();
+  const { allConversations } = useConversationContext();
 
   useEffect(() => {
-   searchConvertationUser(search);
+    searchConvertationUser(search);
   }, [search]);
-
 
   return (
     <div>
@@ -56,12 +55,7 @@ const Conversations = () => {
               <p className="text-center">No Conversations Found</p>
             )}
             {allConversations &&
-              allConversations.map((c) => (
-                <Conversation
-                  key={c._id}
-                  c={c}
-                />
-              ))}
+              allConversations.map((c) => <Conversation key={c._id} c={c} />)}
           </div>
         )}
       </div>

@@ -65,6 +65,7 @@ const SearchPage = () => {
               <span className="text-two text-sm">Suggestions:</span>
               <div>
                 <div className="py-4 px-2 lg:px-0 pb-10">
+                  {suggestions.length === 0 && (<p className="w-full flex justify-center">No Suggestions Found</p>)}
                   {suggestions.map((suggestion) => (
                     <Account key={suggestion._id} user={suggestion} />
                   ))}

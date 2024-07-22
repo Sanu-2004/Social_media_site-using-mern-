@@ -7,6 +7,7 @@ import { UserProvider } from "./Context/UserContext.jsx";
 import { ThemeProvider } from "./Context/ThemeContext.jsx";
 import { ConversationProvider } from "./Context/ConversationContext.jsx";
 import { MessageProvider } from "./Context/MessageContext.jsx";
+import { SocketProvider } from "./Context/SocketContext.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
@@ -15,7 +16,9 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         <ThemeProvider>
           <ConversationProvider>
             <MessageProvider>
-              <App />
+              <SocketProvider>
+                <App />
+              </SocketProvider>
             </MessageProvider>
           </ConversationProvider>
         </ThemeProvider>

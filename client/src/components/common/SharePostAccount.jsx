@@ -7,7 +7,6 @@ const SharePostAccount = ({ c, postId }) => {
   const [shared, setShared] = useState(false);
   const { sendPost } = sendMessageHook();
   const handleShare = () => {
-    console.log(c);
     sendPost(c.members[0]._id, postId);
     setShared(true);
   };

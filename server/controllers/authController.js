@@ -164,12 +164,17 @@ const verifyOtp = async (req, res) => {
             name: user.name,
             username: user.username,
             email: user.email,
+            linkers: user.linkers,
+            linked: user.linked,
+            profilePic: user.profilePic,
         });
     } catch (error) {
         console.log("error in verifyOtp" + error);
         res.status(500).json({ error: "Internal Server" });
     }
 };
+
+
 
 
 

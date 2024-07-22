@@ -5,10 +5,13 @@ import Account from "../common/Account";
 import { useParams } from "react-router-dom";
 import { useUserContext } from "../../Context/UserContext";
 import { LikeUserHook } from "../../Hooks/LinkUser.hook";
-import { set } from "mongoose";
+import UpdateProfile from "./UpdateProfile";
+import { LogoutHook } from "../../Hooks/Logout.hook";
+import { BiLogOutCircle } from "react-icons/bi";
 
 const Profile = () => {
   const [postActive, setPostActive] = useState("post");
+  const { loading, useLogout } = LogoutHook();
   const { username } = useParams();
   const [profile, setProfile] = useState(null);
   const { user } = useUserContext();
@@ -42,7 +45,7 @@ const Profile = () => {
       }
     };
     fetchPoifle();
-  }, [username]);
+  }, [username, user]);
   return (
     <div className="h-svh lg:w-[500px] md:w-2/3 w-full relative md:p-2  overflow-auto">
       <Header />
@@ -79,19 +82,48 @@ const Profile = () => {
               {profile.link}
             </a>
           </div>
+          <dialog id="my_modal_1" className="modal">
+            <div className="modal-box">
+              <UpdateProfile profile={profile} />
+              <div className="modal-action w-full">
+                <form method="dialog" className="w-full p-x2">
+                  <button className="btn w-full">Close</button>
+                </form>
+              </div>
+            </div>
+          </dialog>
           <div className="w-full p-2 flex justify-end">
             {user.username === profile.username ? (
-              <button className="btn btn-outline rounded-full">Edit Profile</button>
+              <div className="flex items-center gap-3">
+                <button
+                  className="btn btn-secondary rounded-full md:hidden"
+                  onClick={useLogout}
+                >
+                  {loading?(<div className="loader"></div>):(<BiLogOutCircle className="text-lg" />)}
+                </button>
+                <button
+                  className="btn btn-outline rounded-full"
+                  onClick={() => {
+                    document.getElementById("my_modal_1").showModal();
+                  }}
+                >
+                  Edit Profile
+                </button>
+              </div>
             ) : (
-              <button className="btn bg-secondary text-primary hover:text-secondary rounded-full" onClick={handleLink}>
+              <button
+                className="btn bg-secondary text-primary hover:text-secondary rounded-full"
+                onClick={handleLink}
+              >
                 {isLinked ? "Linked" : "Link"}
               </button>
             )}
           </div>
+
           <div className="flex w-full justify-around py-2">
             <span
               className={`text-lg px-6 cursor-pointer hover:underline ${
-                postActive==="post" && "underline"
+                postActive === "post" && "underline"
               }`}
               onClick={() => {
                 setPostActive("post");
@@ -101,7 +133,7 @@ const Profile = () => {
             </span>
             <span
               className={`text-lg px-6 cursor-pointer hover:underline ${
-                postActive==="linker" && "underline"
+                postActive === "linker" && "underline"
               }`}
               onClick={() => {
                 setPostActive("linkers");
@@ -110,23 +142,27 @@ const Profile = () => {
               Linkers
             </span>
           </div>
+
           <div>
-            {postActive==="post" ? (
+            {postActive === "post" ? (
               <div className="py-2 px-4">
-                {profile.posts.length === 0 && (<p className="w-full flex justify-center">No Post Found</p>)}
+                {profile.posts.length === 0 && (
+                  <p className="w-full flex justify-center">No Post Found</p>
+                )}
                 {profile.posts.map((post) => (
                   <Post key={post._id} post={post} />
                 ))}
               </div>
             ) : (
               <div className="py-2 px-4">
-                {profile.linkers.length === 0 && (<p className="w-full flex justify-center">No Linker Found</p>)}
+                {profile.linkers.length === 0 && (
+                  <p className="w-full flex justify-center">No Linker Found</p>
+                )}
                 {profile.linkers.map((linker) => (
-                  <Account key={linker._id} user={linker} showLink={false}  />
+                  <Account key={linker._id} user={linker} showLink={false} />
                 ))}
               </div>
             )}
-            
           </div>
         </div>
       )}

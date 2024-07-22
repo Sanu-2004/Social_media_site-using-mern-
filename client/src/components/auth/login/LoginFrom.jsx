@@ -1,4 +1,3 @@
-import { set } from "mongoose";
 import React, { useState } from "react";
 import { FaCircleNotch } from "react-icons/fa";
 import { Link } from "react-router-dom";
@@ -47,12 +46,12 @@ const LoginFrom = () => {
             <Link to="/signup" className="text-two text-xs md:text-sm  hover:underline flex gap-1 py-2">
                 dont have an account? <span className="text-secondary">Sign up</span>
             </Link>
-            <button className="btn btn-outline text-md md:text-xl">
+            <button className="btn btn-outline text-md md:text-xl" type="submit">
             {loading? (<span className="loading loading-spinner loading-md"></span>) : "Login"}
             </button>
-            <button className="btn text-xs md:text-sm my-3">
-                Forgot Password?
-            </button>
+            <Link to="/forget-password"  className="btn text-xs md:text-sm my-3">
+                <span>Forget Password?</span>
+            </Link>
           </form>
         </div>
       </div>

@@ -1,5 +1,6 @@
 const User = require("../models/userModel");
-const { cloudinary_js_config } = require("../utils/cloudinary");
+const cloudinary = require("../utils/cloudinary");
+const bycrypt = require("bcryptjs");
 
 
 const getProfile = async (req, res) => {
@@ -56,7 +57,7 @@ const updateProfile = async (req, res) => {
             user.bio = bio;
         }
         if (profilePic) {
-            const image = await cloudinary_js_config.uploader.upload(profilePic, {
+            const image = await cloudinary.uploader.upload(profilePic, {
                 folder: "profilePics",
                 width: 200,
                 height: 200,
@@ -73,6 +74,29 @@ const updateProfile = async (req, res) => {
         return res.status(500).json({ error: "Internal server error" });
     }
 };
+
+const updatePassWord = async (req, res)=>{
+    try {
+        const {password ,confirmPassword} = req.body;
+        if(password !== confirmPassword){
+            return res.status(400).json({error:"Passwords do not match"});
+        }
+        const id = req.user._id;
+        const user = await User.findById(id);
+        if(!user){
+            return res.status(404).json({error:"User not found"});
+        }
+        const salt = await bycrypt.genSalt(10);
+        const hashedPassword = await bycrypt.hash(password,salt);
+        user.password = hashedPassword;
+        await user.save();
+        return res.status(200).json({message:"Password updated successfully"});
+    } catch (error) {
+        console.log("error in updatePassword" + error);
+        res.status(500).json({ error: "Internal Server" });
+    }
+
+}
 
 const deleteProfile = async (req, res) => {
     try {
@@ -142,4 +166,4 @@ const searchUser = async (req, res) => {
 
 
 
-module.exports = { updateProfile, deleteProfile, getProfile, userSuggestions, linkUser, searchUser };
+module.exports = { updateProfile, deleteProfile, getProfile, userSuggestions, linkUser, searchUser, updatePassWord };
