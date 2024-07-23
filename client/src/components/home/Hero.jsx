@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Header from "../common/Header";
 import Post from "../common/Post";
 import CreatePost from "./CreatePost";
+import toast from 'react-hot-toast';
 
 const Hero = () => {
   const [posts, setPosts] = useState([]);
@@ -12,7 +13,12 @@ const Hero = () => {
       try {
         const res = await fetch("/api/post/getposts");
         const data = await res.json();
-        setPosts(data);
+        if(data.error){
+          toast.error(data.error);
+          setPosts([]);
+        }else{
+          setPosts(data);
+        }
       } catch (error) {
         console.log({"Hero page": error});
       }finally{
@@ -27,7 +33,7 @@ const Hero = () => {
       <CreatePost />
       <div className="pb-16">
         {
-          posts.map((post) => {
+          posts?.map((post) => {
             return <Post key={post._id} post={post} />;
           })
         }

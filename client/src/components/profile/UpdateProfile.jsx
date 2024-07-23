@@ -18,6 +18,7 @@ const UpdateProfile = ({ profile }) => {
 
   const handleUpdate = async () => {
     setDetails({ ...details, profilePic: image });
+    console.log(details);
 
     const user = await updateProfile(details);
     if(user){

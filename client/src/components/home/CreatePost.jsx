@@ -17,6 +17,7 @@ const CreatePost = () => {
     if (success) {
       setPost("");
       setImage(null);
+      setPreview(null);
     }
   };
   const removeImage = () => {
@@ -61,10 +62,10 @@ const CreatePost = () => {
         </div>
       )}
           <AddImage setImage={setImage} setPreview={setPreview} />
-          <button className="btn" onClick={handlePost}>
+          <button className="btn" onClick={handlePost} disabled={loading}>
             {loading ? (
               <div className="flex gap-2 items-center">
-                <div className="spnner"></div> Posting
+                <div className="loading loading-spinner"></div> Posting
               </div>
             ) : (
               <div className="flex gap-2 items-center">

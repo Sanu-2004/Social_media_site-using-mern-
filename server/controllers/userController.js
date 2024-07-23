@@ -15,7 +15,7 @@ const getProfile = async (req, res) => {
         if (!user) {
             return res.status(404).json({ error: "User not found" });
         }
-        
+        user.posts.sort((a, b) => b.createdAt - a.createdAt);
         return res.status(200).json(user);
 
     } catch (error) {
@@ -63,6 +63,11 @@ const updateProfile = async (req, res) => {
                 height: 200,
             });
             user.profilePic = image.secure_url;
+            try{
+            await cloudinary.uploader.destroy(profilePic.split("/").pop().split(".")[0]);
+            }catch(error){
+                console.log("Error in deleting image from cloudinary",error);
+            }
         }
         if (link) {
             user.link = link;

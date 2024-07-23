@@ -43,6 +43,7 @@ const Post = ({ post }) => {
 
   return (
     <div className="border-b last:border-0 pb-3">
+      <Link to={`/profile/${post?.postedBy.username}`}>
       <div className="w-full p-6 flex gap-2">
         <img
           src={post?.postedBy.profilePic}
@@ -57,6 +58,7 @@ const Post = ({ post }) => {
           </div>
         </div>
       </div>
+      </Link>
       <div className="flex flex-col justify-center">
         <Link to={`/post/${post?._id}`}>
           <div className="w-auto h-auto flex flex-col justify-center items-center px-6">
