@@ -9,8 +9,9 @@ export const useConversationContext = () => {
 export const ConversationProvider = ({ children }) => {
     const [conversation, setConversation] = useState(null);
     const [allConversations, setAllConversations] = useState([]);
+    const [videoCall, setVideoCall] = useState(null);
     return (
-        <ConversationContext.Provider value={{conversation, setConversation, allConversations, setAllConversations}}>
+        <ConversationContext.Provider value={{conversation, setConversation, allConversations, setAllConversations, videoCall, setVideoCall}}>
             {children}
         </ConversationContext.Provider>
     );

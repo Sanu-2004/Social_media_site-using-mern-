@@ -3,6 +3,7 @@ const dotenv = require('dotenv');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 
+
 const connectDB = require('./db/connectDB.');
 const authRoute = require('./routes/authRoute');
 const postRoute = require('./routes/postRoute');
@@ -10,8 +11,9 @@ const userRoute = require('./routes/userRoute');
 const messaageRoute = require('./routes/messageRoute');
 const notificatonRoute = require('./routes/notficationRoute');
 const { app, server } = require('./socket/socket');
+const peerServer = require('./socket/peerServer');
 
-
+peerServer();
 dotenv.config();
 const PORT = process.env.Port || 5000;
 

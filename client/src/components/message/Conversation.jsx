@@ -2,13 +2,38 @@ import React, { useEffect, useState } from "react";
 import { IoIosVideocam } from "react-icons/io";
 import { useConversationContext } from "../../Context/ConversationContext";
 import { useSocketContext } from "../../Context/SocketContext";
+import { VideoCallHook } from "../../Hooks/VideoCallHook";
+import { useUserContext } from "../../Context/UserContext";
+import { useNavigate } from "react-router-dom";
+
+
+
 const Conversation = ({ c }) => {
-  const { setConversation } = useConversationContext();
+  const { setConversation, setVideoCall } = useConversationContext();
   const { onlineUsers } = useSocketContext();
+  const { StartCall } = VideoCallHook();
+  const { socket } = useSocketContext();
+  const [isCalling, setIsCalling] = useState(false);
+  const {user} = useUserContext();
+  const navigate = useNavigate();
+
+  const handleCall = async () => {
+    StartCall(c.members[0]);
+    navigate("/video/"+c.members[0]._id);
+  };
 
   const handleClick = () => {
     setConversation(c);
   };
+  useEffect(() => {
+    setConversation(null);
+    socket.on("calluser", (callerid) => {
+      if (c.members[0]._id === callerid) {
+        setIsCalling(callerid);
+        navigate("/video/"+callerid);
+      }
+    });
+  }, [socket]);
   return (
     <div className="snap-center border-b last:border-0">
       <div className="flex items-center justify-between my-2 p-3">
@@ -40,9 +65,18 @@ const Conversation = ({ c }) => {
             </span>
           </div>
         </div>
-        <button className="btn rounded-full">
-          <IoIosVideocam />
-        </button>
+        {isCalling ? (
+          <div className="flex gap-2 justify-center items-center" onClick={()=>{setVideoCall(user.id)}}>
+          <button className="btn rounded-full">
+            pickup
+          </button>
+          <button className="btn rounded-full">end</button>
+          </div>
+        ):(
+          <button className="btn rounded-full" onClick={handleCall}>
+            <IoIosVideocam />
+          </button>
+        )}
       </div>
     </div>
   );
