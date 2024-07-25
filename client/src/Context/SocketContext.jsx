@@ -46,6 +46,7 @@ export const SocketProvider = ({ children }) => {
           userId: user.id,
           peerId: newPeer.id,
         },
+        secure: true,
       });
     //   console.log(newPeer);
       setSocket(newSocket);
