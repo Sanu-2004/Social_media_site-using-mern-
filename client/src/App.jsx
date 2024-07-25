@@ -21,7 +21,7 @@ const App = () => {
   return (
     <div className='bg-primary text-secondary' data-theme={theme}>
       <Toaster />
-      <div className='flex justify-center items-center h-svh overflow-hidden'>
+      <div className='flex justify-center items-center h-screen overflow-hidden'>
       {/* <Navbar /> */}
       <Routes>
         <Route path='/login' element={!user?<Login />:<Navigate to="/" />} />
@@ -34,7 +34,7 @@ const App = () => {
       <SearchPage />
         </div> */}
       </div>
-      {user?.id && <NavBottom />}
+      <NavBottom />
     </div>
   )
 }

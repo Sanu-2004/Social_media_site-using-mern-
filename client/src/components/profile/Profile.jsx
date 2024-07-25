@@ -143,7 +143,7 @@ const Profile = () => {
             </span>
           </div>
 
-          <div className="pb-12">
+          <div>
             {postActive === "post" ? (
               <div className="py-2 px-4">
                 {profile.posts.length === 0 && (

@@ -50,32 +50,15 @@ export const SocketProvider = ({ children }) => {
       });
     //   console.log(newPeer);
       setSocket(newSocket);
-      if (newSocket){
-        newSocket.on("online", (data) => {
-          setOnlineUsers(data);
-          console.log("online",data);
-        });
-        return () => {
-          newSocket.off("online");
-        };
-      }
-      if (newSocket){
-        newSocket.on("peerMap", (data) => {
-          setPeerMap(data);
-          console.log("PeerMap",data);
-        });
-        return () => {
-          newSocket.off("peerMap");
-        };
-      }
-      if (newSocket){
-        newSocket.on("endcall", () => {
-          setVideoCall(null);
-        });
-        return () => {
-          newSocket.off("endcall");
-        };
-      }
+      newSocket.on("online", (data) => {
+        setOnlineUsers(data);
+      });
+      newSocket.on("peerMap", (data) => {
+        setPeerMap(data);
+      });
+      newSocket.on("endcall", () => {
+        setVideoCall(null);
+      });
       return () => {
         newSocket.close();
       };
