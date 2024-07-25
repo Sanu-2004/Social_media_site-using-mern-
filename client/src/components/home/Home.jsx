@@ -1,5 +1,4 @@
 import React from "react";
-import NavBottom from "./NavBottom";
 import { Navigate, Route, Routes } from "react-router-dom";
 import Hero from "./Hero";
 import MessagePage from "../message/MessagePage";
@@ -32,7 +31,6 @@ const Home = () => {
       <div className="hidden lg:flex h-[90vh] w-1/4 border-l">
         <SearchPage />
       </div>
-      <NavBottom />
     </>
   );
 };
