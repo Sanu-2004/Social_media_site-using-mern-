@@ -41,7 +41,7 @@ export const SocketProvider = ({ children }) => {
     if (user) {
       const newPeer = connectPeer();
       setPeer(newPeer);
-      const newSocket = io(`http://localhost:5000`, {
+      const newSocket = io(`http://localhost:8000`, {
         query: {
           userId: user.id,
           peerId: newPeer.id,
