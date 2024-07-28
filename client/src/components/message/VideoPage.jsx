@@ -2,52 +2,62 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useConversationContext } from "../../Context/ConversationContext";
 import { MdOutlineCallEnd } from "react-icons/md";
 import { useSocketContext } from "../../Context/SocketContext";
-import { useUserContext } from "../../Context/UserContext";
+import { VideoCallHook } from "../../Hooks/VideoCallHook";
 
 const VideoPage = () => {
   const { videoCall, setVideoCall } = useConversationContext();
   const myVideo = useRef();
   const remoteVideo = useRef();
-  const { socket, peer, peerMap } = useSocketContext();
-  const { user } = useUserContext();
+  const { peer, peerMap } = useSocketContext();
+  const {EndCall} = VideoCallHook();
+  var Call
 
   const handleEndCall = () => {
-    socket.emit("endcall", videoCall);
+    EndCall();
     setVideoCall(null);
   };
 
 
+  const getcall = () => {
+    peer.on("call", function (call) {
+      console.log("answering call");
+      navigator.mediaDevices
+        .getUserMedia({ video: true, audio: true })
+        .then((stream) => {
+          call.answer(stream);
+          myVideo.current.srcObject = stream || null;
+          call.on("stream", (remoteStream) => {
+            if (remoteStream) {
+              remoteVideo.current.srcObject = remoteStream;
+            }
+          });
+        });
+    });
+  };
 
 
   useEffect(() => {
 
-
-    if (videoCall !== user.id) {
       navigator.mediaDevices
         .getUserMedia({ video: true, audio: true })
         .then((stream) => {
-          myVideo.current.srcObject = stream;
-          let Call = peer.call(peerMap[videoCall], stream);
+          myVideo.current.srcObject = stream || null;
+          Call = peer.call(peerMap[videoCall], stream);
           Call.on("stream", (remoteStream) => {
-            remoteVideo.current.srcObject = remoteStream;
+            if (remoteStream) {
+              remoteVideo.current.srcObject = remoteStream;
+            }
           });
         });
-    }
-    const getcall = () => {
-      peer.on("call", function (call) {
-        navigator.mediaDevices
-          .getUserMedia({ video: true, audio: true })
-          .then((stream) => {
-            call.answer(stream);
-            myVideo.current.srcObject = stream;
-            call.on("stream", (remoteStream) => {
-              remoteVideo.current.srcObject = remoteStream;
-            });
-          });
-      });
-    };
+    
+    
     getcall();
-  }, []);
+  }, [videoCall]);
+
+  window.addEventListener("beforeunload", () => {
+    Call.close();
+    handleEndCall();
+  });
 
   return (
     <div className="flex flex-col justify-center items-start h-full p-4 py-6">

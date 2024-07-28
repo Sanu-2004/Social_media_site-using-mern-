@@ -4,6 +4,7 @@ import io from "socket.io-client";
 import { v4 as uuidv4 } from "uuid";
 import { Peer } from "peerjs";
 import { useConversationContext } from "./ConversationContext";
+import toast from "react-hot-toast";
 
 const SocketContext = createContext();
 
@@ -35,7 +36,7 @@ export const SocketProvider = ({ children }) => {
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [peer, setPeer] = useState({});
   const [peerMap, setPeerMap] = useState({});
-  const {setVideoCall} = useConversationContext();
+  const {videoCall, setVideoCall} = useConversationContext();
 
   useEffect(() => {
     if (user) {
@@ -58,6 +59,7 @@ export const SocketProvider = ({ children }) => {
       });
       newSocket.on("endcall", () => {
         setVideoCall(null);
+        toast.success("Call Ended");
       });
       return () => {
         newSocket.close();
@@ -68,7 +70,7 @@ export const SocketProvider = ({ children }) => {
         setSocket(null);
       }
     }
-  }, [user]);
+  }, [user,videoCall]);
 
   return (
     <SocketContext.Provider value={{ socket, onlineUsers, peer, peerMap }}>
