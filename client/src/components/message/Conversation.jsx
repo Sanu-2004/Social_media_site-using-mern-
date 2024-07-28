@@ -3,23 +3,28 @@ import { IoIosVideocam } from "react-icons/io";
 import { useConversationContext } from "../../Context/ConversationContext";
 import { useSocketContext } from "../../Context/SocketContext";
 import { VideoCallHook } from "../../Hooks/VideoCallHook";
-import { useUserContext } from "../../Context/UserContext";
 import { useNavigate } from "react-router-dom";
+import { FcVideoCall } from "react-icons/fc";
+import { FcEndCall } from "react-icons/fc";
+import { set } from "mongoose";
 
 
 
 const Conversation = ({ c }) => {
-  const { setConversation, setVideoCall } = useConversationContext();
+  const { setConversation } = useConversationContext();
   const { onlineUsers } = useSocketContext();
-  const { StartCall } = VideoCallHook();
+  const { StartCall, EndCall } = VideoCallHook();
   const { socket } = useSocketContext();
   const [isCalling, setIsCalling] = useState(false);
-  const {user} = useUserContext();
   const navigate = useNavigate();
 
   const handleCall = async () => {
     StartCall(c.members[0]);
     navigate("/video/"+c.members[0]._id);
+  };
+  const handleEndCall = async () => {
+    EndCall(c.members[0]._id);
+    setIsCalling(false);
   };
 
   const handleClick = () => {
@@ -27,12 +32,16 @@ const Conversation = ({ c }) => {
   };
   useEffect(() => {
     setConversation(null);
-    socket.on("calluser", (callerid) => {
-      if (c.members[0]._id === callerid) {
-        setIsCalling(callerid);
-        navigate("/video/"+callerid);
+    if (socket) {
+      socket.on("calluser", (callerid) => {
+        if (c.members[0]._id === callerid) {
+          setIsCalling(callerid);
+        }
+      });
+      return () => {
+        socket.off("calluser");
       }
-    });
+    }
   }, [socket]);
   return (
     <div className="snap-center border-b last:border-0">
@@ -66,11 +75,13 @@ const Conversation = ({ c }) => {
           </div>
         </div>
         {isCalling ? (
-          <div className="flex gap-2 justify-center items-center" onClick={()=>{setVideoCall(user.id)}}>
-          <button className="btn rounded-full">
-            pickup
+          <div className="flex gap-2 justify-center items-center">
+          <button className="btn rounded-full"  onClick={handleCall}>
+            <FcVideoCall />
           </button>
-          <button className="btn rounded-full">end</button>
+          <button className="btn rounded-full" onClick={handleEndCall}>
+            <FcEndCall />
+          </button>
           </div>
         ):(
           <button className="btn rounded-full" onClick={handleCall}>

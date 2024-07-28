@@ -14,10 +14,12 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import Search from './components/search/Search'
 import { useUserContext } from './Context/UserContext'
 import { useThemeContext } from './Context/ThemeContext'
+import { useConversationContext } from './Context/ConversationContext'
 
 const App = () => {
   const {user}  = useUserContext();
   const {theme} = useThemeContext();
+  const {videoCall} = useConversationContext();
   return (
     <div className='bg-primary text-secondary' data-theme={theme}>
       <Toaster />
@@ -34,7 +36,7 @@ const App = () => {
       <SearchPage />
         </div> */}
       </div>
-      {user?.id && <NavBottom />}
+      {user?.id && !videoCall && <NavBottom />}
     </div>
   )
 }

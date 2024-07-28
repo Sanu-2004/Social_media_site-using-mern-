@@ -8,9 +8,9 @@ const StartCall = (socket, peerMap, getSocketId) => {
     };
     socket.on("startcall", (userId, callerId) => {
         const socketId = getSocketId(userId);
-        console.log(getSocketId(callerId));
+        // console.log(getSocketId(callerId));
         if (socketId) {
-            console.log("Calling user", userId);
+            // console.log("Calling user", userId);
             socket.to(socketId).emit("calluser", callerId);
         }
     });   
