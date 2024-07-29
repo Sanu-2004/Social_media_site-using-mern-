@@ -16,7 +16,7 @@ const Profile = () => {
   const [profile, setProfile] = useState(null);
   const { user } = useUserContext();
   const { useLikeUser } = LikeUserHook();
-  const [isLinked, setIsLinked] = useState(user.linked.includes(profile?._id));
+  const [isLinked, setIsLinked] = useState(false);
 
   const handleLink = async () => {
     await useLikeUser(profile?._id);
@@ -32,7 +32,8 @@ const Profile = () => {
           });
           const data = await res.json();
           setProfile(data);
-          setIsLinked(user.linked.includes(data._id));
+          setIsLinked(data.linkers.some((linker) => linker._id === user.id));
+          // console.log(data.linkers, user.id); 
         } else {
           const res = await fetch(`/api/user/profile/${user.username}`, {
             credentials: "include",
@@ -45,6 +46,7 @@ const Profile = () => {
       }
     };
     fetchPoifle();
+    // console.log(isLinked);
   }, [username, user]);
   return (
     <div className="h-svh lg:w-[500px] md:w-2/3 w-full relative md:p-2  overflow-auto">
@@ -99,7 +101,11 @@ const Profile = () => {
                   className="btn btn-secondary rounded-full md:hidden"
                   onClick={useLogout}
                 >
-                  {loading?(<div className="loader"></div>):(<BiLogOutCircle className="text-lg" />)}
+                  {loading ? (
+                    <div className="loading loading-spinner"></div>
+                  ) : (
+                    <BiLogOutCircle className="text-lg" />
+                  )}
                 </button>
                 <button
                   className="btn btn-outline rounded-full"
@@ -133,7 +139,7 @@ const Profile = () => {
             </span>
             <span
               className={`text-lg px-6 cursor-pointer hover:underline ${
-                postActive === "linker" && "underline"
+                postActive === "linkers" && "underline"
               }`}
               onClick={() => {
                 setPostActive("linkers");

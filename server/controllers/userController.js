@@ -57,17 +57,19 @@ const updateProfile = async (req, res) => {
             user.bio = bio;
         }
         if (profilePic) {
+            try{
+            const img = user.profilePic.split("/");
+            const public_id = img[img.length - 1].split(".")[0];
+            await cloudinary.uploader.destroy(`profilePics/${public_id}`);
+            }catch(error){
+                console.log("Error in updateProfile", error);
+            }
             const image = await cloudinary.uploader.upload(profilePic, {
                 folder: "profilePics",
                 width: 200,
                 height: 200,
             });
             user.profilePic = image.secure_url;
-            try{
-            await cloudinary.uploader.destroy(profilePic.split("/").pop().split(".")[0]);
-            }catch(error){
-                console.log("Error in deleting image from cloudinary",error);
-            }
         }
         if (link) {
             user.link = link;

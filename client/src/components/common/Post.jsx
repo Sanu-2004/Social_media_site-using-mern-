@@ -6,8 +6,11 @@ import { useUserContext } from "../../Context/UserContext";
 import { LikePostHook } from "../../Hooks/LikePost.hook";
 import { BiSolidLike } from "react-icons/bi";
 import { CommentPostHook } from "../../Hooks/CommentPost.hook";
+import { MdDelete } from "react-icons/md";
 import { Link } from "react-router-dom";
 import SharePost from "./SharePost";
+import DeletePostHook from "../../Hooks/DeletePostHook";
+import toast from "react-hot-toast";
 
 const Post = ({ post }) => {
   const { user } = useUserContext();
@@ -17,6 +20,7 @@ const Post = ({ post }) => {
   const [active, setActive] = useState(false);
   const { useCommentPost } = CommentPostHook();
   const [share, setShare] = useState(false);
+  const { useDeletepost, loading } = DeletePostHook();
 
   const likePost = async () => {
     try {
@@ -40,25 +44,53 @@ const Post = ({ post }) => {
       console.log("Error in commentPost", error);
     }
   };
+  const DeletePost = async () => {
+    try {
+      const data = await useDeletepost(post._id);
+      if (data.error) {
+        return;
+      }
+      if(data.success){
+        toast.success("Post Will Be Deleted");
+      }
+    }catch(error){
+      console.log("Error in DeletePost", error);
+    }
+  };
 
   return (
     <div className="border-b last:border-0 pb-3">
-      <Link to={`/profile/${post?.postedBy.username}`}>
-      <div className="w-full p-6 flex gap-2">
+      <div className="w-full p-6 flex items-center justify-between">
+        <Link to={`/profile/${post?.postedBy.username}`} className="flex gap-2">
+
         <img
           src={post?.postedBy.profilePic}
           className="w-[50px] h-[50px] rounded-full"
-        />
-        <div className="flex items-center w-72">
-          <div className="flex flex-col justify-start">
-            <span className="pl-2 text-lg">{post?.postedBy.name}</span>
-            <span className="pl-2 text-two text-sm">
-              @{post?.postedBy.username}
-            </span>
+          />
+          <div className="flex items-center">
+            <div className="flex flex-col justify-start">
+              <span className="pl-2 text-lg">{post?.postedBy.name}</span>
+              <span className="pl-2 text-two text-sm">
+                @{post?.postedBy.username}
+              </span>
+            </div>
           </div>
-        </div>
+        </Link>
+
+        {user.id === post.postedBy._id && (
+          <div>
+          <button className="btn group/delete" onClick={DeletePost}>
+            {loading && <div className="loading loading-spinner"></div>}
+            <MdDelete
+              className="text-xl group-hover/delete:hidden cursor-pointer"
+              
+              />
+              <span className="group-hover/delete:flex hidden transition-all">Delete</span>
+          </button>
+              </div>
+        )}
       </div>
-      </Link>
+
       <div className="flex flex-col justify-center">
         <Link to={`/post/${post?._id}`}>
           <div className="w-auto h-auto flex flex-col justify-center items-center px-6">
@@ -119,9 +151,7 @@ const Post = ({ post }) => {
               </label>
             </form>
           )}
-          {share && (
-            <SharePost post={post} />
-          )}
+          {share && <SharePost post={post} />}
         </div>
       </div>
     </div>

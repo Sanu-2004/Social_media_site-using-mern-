@@ -13,16 +13,16 @@ const UpdateProfile = ({ profile }) => {
     bio: "",
   });
   const [image, setImage] = useState(null);
-  const [preview, setPreview] = useState(profile.profilePic||null);
-  const {loading,updateProfile}=UpdateProfileHook();
+  const [preview, setPreview] = useState(profile.profilePic || null);
+  const { loading, updateProfile } = UpdateProfileHook();
 
   const handleUpdate = async () => {
     setDetails({ ...details, profilePic: image });
     console.log(details);
 
     const user = await updateProfile(details);
-    if(user){
-      toast.success("Profile updated successfully")
+    if (user) {
+      toast.success("Profile updated successfully");
     }
   };
 
@@ -30,11 +30,7 @@ const UpdateProfile = ({ profile }) => {
     <div className="w-full">
       <div className="flex flex-col justify-center items-center gap-2">
         <div className="relative w-28 h-28 m-3">
-          <img
-            src={preview}
-            alt="profile"
-            className="w-28 h-28 rounded-full"
-          />
+          <img src={preview} alt="profile" className="w-28 h-28 rounded-full" />
           <div className="absoltue z-30 translate-y-[-100%] rounded-full bg-base-300 opacity-0 hover:opacity-75 w-28 h-28">
             <div className="z-50 flex absolute bottom-1/2 right-1/2 translate-x-1/2 translate-y-1/2">
               <AddImage setImage={setImage} setPreview={setPreview} />
@@ -84,7 +80,17 @@ const UpdateProfile = ({ profile }) => {
           ></textarea>
         </div>
         <div className="px-2 w-full py-2">
-          <button className="btn btn-outline w-full" onClick={handleUpdate}>{loading?<div className=""></div>:"Update Profile"}</button>
+          <button
+            className="btn btn-outline w-full"
+            disabled={loading}
+            onClick={handleUpdate}
+          >
+            {loading ? (
+              <div className="loading loading-spinner"></div>
+            ) : (
+              "Update Profile"
+            )}
+          </button>
         </div>
       </div>
     </div>

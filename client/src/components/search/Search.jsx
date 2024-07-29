@@ -1,6 +1,6 @@
 import React from "react";
 import SearchPage from "../common/SearchPage";
-import Home from "../home/Home";
+import Hero from "../home/Hero";
 
 const Search = () => {
   return (
@@ -9,7 +9,7 @@ const Search = () => {
         <SearchPage />
       </div>
       <div className="hidden lg:flex w-svh">
-        <Home />
+        <Hero />
       </div>
     </div>
   );

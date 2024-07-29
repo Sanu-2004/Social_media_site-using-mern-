@@ -1,7 +1,6 @@
 import toast from "react-hot-toast";
 import { useUserContext } from "../Context/UserContext";
 import { useState } from "react";
-import { json } from "react-router-dom";
 
 export const UpdateProfileHook = () => {
     const [loading, setLoading] = useState(false);

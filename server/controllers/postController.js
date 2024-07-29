@@ -98,6 +98,11 @@ const deletePost = async (req, res) => {
         if (post.postedBy.toString() !== user._id.toString()) {
             return res.status(401).json({ error: "Unauthorized" });
         }
+        if (post.image) {
+            const img = post.image.split("/");
+            const public_id = img[img.length - 1].split(".")[0];
+            await cloudanary.uploader.destroy(`posts/${public_id}`);
+        }
         user.posts.pull(post._id);
         await Promise.all([user.save(), Post.findByIdAndDelete(id)]);
         return res.status(200).json({ success: true });
