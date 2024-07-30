@@ -6,9 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "server": "nodemon server/server.js",
-    "build": "npm install && npm install --prefix client",
-    "start": "node server/server.js",
-    "client": "npm run dev --prefix client"
+    "setup": "npm install && npm install --prefix client",
+    "client": "npm run dev --prefix client",
+    "start": "concurrently \"npm run server\" \"npm run client\""
   },
   "author": "",
   "license": "ISC",
@@ -26,6 +26,7 @@
     "socket.io": "^4.7.5"
   },
   "devDependencies": {
+    "concurrently": "^8.2.2",
     "nodemon": "^3.1.4"
   }
 }
