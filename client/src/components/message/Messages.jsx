@@ -18,7 +18,8 @@ const Messages = () => {
   const [preview, setPreview] = useState(null);
   const { sendMessage, sendImage } = sendMessageHook();
   const [loading, setLoading] = useState(false);
-  const handleSend = async () => {
+  const handleSend = async (e) => {
+    e.preventDefault();
     setLoading(true)
     try{
       if (!input && !image) return toast.error("Message can't be empty");
@@ -105,7 +106,7 @@ const Messages = () => {
               </div>
             )}
         <div className="p-4 pt-0">
-          <label className="input w-full flex items-center justify-end rounded-full">
+          <form className="input w-full flex items-center justify-end rounded-full"  onSubmit={handleSend}>
             
             <input
               type="text"
@@ -119,11 +120,11 @@ const Messages = () => {
             />
             <div className="flex gap-2">
               <AddImage setImage={setImage} setPreview={setPreview} />
-            <button className="px-2 rounded-full" onClick={handleSend} disabled={loading}>
+            <button className="px-2 rounded-full" type="submit" disabled={loading}>
               {loading ? (<div className="loading loading-spinner"></div>):<BsSend className="text-secondary" />}
             </button>
             </div>
-          </label>
+          </form>
         </div>
       </div>
     </div>

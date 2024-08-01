@@ -57,7 +57,7 @@ const Post = ({ post }) => {
       console.log("Error in DeletePost", error);
     }
   };
-
+  
   return (
     <div className="border-b last:border-0 pb-3">
       <div className="w-full p-6 flex items-center justify-between">
@@ -77,7 +77,7 @@ const Post = ({ post }) => {
           </div>
         </Link>
 
-        {user.id === post.postedBy._id && (
+        {user.id === post?.postedBy._id && (
           <div>
           <button className="btn group/delete" onClick={DeletePost}>
             {loading && <div className="loading loading-spinner"></div>}
