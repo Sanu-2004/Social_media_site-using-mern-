@@ -9,7 +9,6 @@ const authRoute = require('./routes/authRoute');
 const postRoute = require('./routes/postRoute');
 const userRoute = require('./routes/userRoute');
 const messaageRoute = require('./routes/messageRoute');
-const notificatonRoute = require('./routes/notficationRoute');
 const { app, server } = require('./socket/socket');
 const peerServer = require('./socket/peerServer');
 
@@ -33,7 +32,6 @@ app.use("/api/auth", authRoute);
 app.use("/api/post", postRoute);
 app.use("/api/user", userRoute);
 app.use("/api/message", messaageRoute);
-app.use("/api/notification", notificatonRoute);
 
 
 
