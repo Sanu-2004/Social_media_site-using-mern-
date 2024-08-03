@@ -24,11 +24,6 @@ const MessagePage = () => {
             <Conversations />
           </div>
         )}
-        {/* {videoCall && (
-          <div className="h-full md:p-2">
-            <VideoPage />
-          </div>
-        )} */}
       </div>
     </>
   );

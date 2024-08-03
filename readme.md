@@ -31,8 +31,8 @@ This is a social media project built using the MERN (MongoDB, Express.js, React.
       CLOUDINARY_API_KEY=your-cloudinary-api-key
       CLOUDINARY_API_SECRET=your-cloudinary-api-secret
       ```
-5. Start the server: `npm run server`
-5. Start the client: `npm run client`
+5. Install all dependencies: `npm run setup`
+5. Start the client and server: `npm start`
 
 ## Technologies Used
 

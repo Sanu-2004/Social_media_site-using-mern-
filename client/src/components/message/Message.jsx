@@ -13,6 +13,9 @@ const Message = ({ msg }) => {
     if(msg.type === "post") {
       const fetchPost = async () => {
         const p = await useGetPost(msg.content);
+        if(p.error){
+          return;
+        }
         setPost(p);
       };
       fetchPost();
@@ -36,7 +39,9 @@ const Message = ({ msg }) => {
           )}
           {msg.type === "post" && (
             <div className="bg-base-300 rounded-3xl">
-            <Post post={post} />
+              {
+                post === null ? <div className="bg-base-300 p-4 rounded-2xl flex flex-wrap w-fit">Post not Found</div> : <Post post={post} />
+              }
             </div>
           )}
         </div>
