@@ -17,7 +17,7 @@ This is a social media project built using the MERN (MongoDB, Express.js, React.
 
 1. Clone the repository: `git clone https://github.com/your-username/social-media-project-MERN.git`
 2. Navigate to the project directory: `cd social-media-project-MERN`
-3. Install dependencies: `npm run build`
+3. Install dependencies: `npm run setup`
 4. Set up environment variables:
     - Create a `.env` file in the root directory
     - Add the following variables:
@@ -31,7 +31,6 @@ This is a social media project built using the MERN (MongoDB, Express.js, React.
       CLOUDINARY_API_KEY=your-cloudinary-api-key
       CLOUDINARY_API_SECRET=your-cloudinary-api-secret
       ```
-5. Install all dependencies: `npm run setup`
 5. Start the client and server: `npm start`
 
 ## Technologies Used
