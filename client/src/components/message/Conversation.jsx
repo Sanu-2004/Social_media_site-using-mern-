@@ -14,7 +14,7 @@ const Conversation = ({ c }) => {
   const { setConversation } = useConversationContext();
   const { onlineUsers } = useSocketContext();
   const { StartCall, EndCall } = VideoCallHook();
-  const { socket } = useSocketContext();
+  const { socket, setPeerMap } = useSocketContext();
   const [isCalling, setIsCalling] = useState(false);
   const navigate = useNavigate();
 
@@ -33,13 +33,27 @@ const Conversation = ({ c }) => {
   useEffect(() => {
     setConversation(null);
     if (socket) {
-      socket.on("calluser", (callerid) => {
+      socket.on("calluser", (peerMap, callerid) => {
+        setPeerMap(peerMap);
         if (c.members[0]._id === callerid) {
           setIsCalling(callerid);
         }
       });
       return () => {
         socket.off("calluser");
+      }
+    }
+  }, [socket]);
+  useEffect(() => {
+    setConversation(null);
+    if (socket) {
+      socket.on("endcall", (map) => {
+        setVideoCall(null);
+        setPeerMap(map);
+        setIsCalling(null);
+      });
+      return () => {
+        socket.off("endcall");
       }
     }
   }, [socket]);

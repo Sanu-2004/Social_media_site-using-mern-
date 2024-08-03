@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 import { Peer } from "peerjs";
 import { useConversationContext } from "./ConversationContext";
 import toast from "react-hot-toast";
+import { set } from "mongoose";
 
 const SocketContext = createContext();
 
@@ -57,9 +58,12 @@ export const SocketProvider = ({ children }) => {
       newSocket.on("peerMap", (data) => {
         setPeerMap(data);
       });
-      newSocket.on("endcall", () => {
+      newSocket.on("endcall", (map) => {
         setVideoCall(null);
+        setPeerMap(map);
         toast.success("Call Ended");
+        const newPeer = connectPeer();
+        setPeer(newPeer);
       });
       return () => {
         newSocket.close();
@@ -70,10 +74,10 @@ export const SocketProvider = ({ children }) => {
         setSocket(null);
       }
     }
-  }, [user,videoCall]);
+  }, [user, videoCall]);
 
   return (
-    <SocketContext.Provider value={{ socket, onlineUsers, peer, peerMap }}>
+    <SocketContext.Provider value={{ socket, onlineUsers, peer, peerMap, setPeerMap }}>
       {children}
     </SocketContext.Provider>
   );

@@ -4,7 +4,7 @@ import { useUserContext } from "../Context/UserContext";
 import { toast } from "react-hot-toast";
 
 export const VideoCallHook = () => {
-    const { socket, peer } = useSocketContext();
+    const { socket } = useSocketContext();
     const { user } = useUserContext();
     const { videoCall, setVideoCall } = useConversationContext();
 
