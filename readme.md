@@ -16,7 +16,7 @@ This is a social media project built using the MERN (MongoDB, Express.js, React.
 ## Installation
 
 1. Clone the repository: `git clone https://github.com/Sanu-2004/Social_media_site-using-mern-.git`
-2. Navigate to the project directory: `cd social-media-project-MERN`
+2. Navigate to the project directory: `cd social-media-project-mern`
 3. Install dependencies: `npm run setup`
 4. Set up environment variables:
     - Create a `.env` file in the root directory
