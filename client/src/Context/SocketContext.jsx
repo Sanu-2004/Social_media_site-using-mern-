@@ -5,7 +5,6 @@ import { v4 as uuidv4 } from "uuid";
 import { Peer } from "peerjs";
 import { useConversationContext } from "./ConversationContext";
 import toast from "react-hot-toast";
-import { set } from "mongoose";
 
 const SocketContext = createContext();
 
