@@ -13,8 +13,9 @@ export const GetPostHook = () => {
                 },
             });
             const data = await res.json();
+            // console.log(data);
             if (data.error) {
-                return toast.error(data.error);
+                return false;
             }
             return data;
         } catch (error) {

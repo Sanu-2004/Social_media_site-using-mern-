@@ -4,6 +4,7 @@ import Comment from "./Comment";
 import { useParams } from "react-router-dom";
 import { GetPostHook } from "../../Hooks/GetPost.hook";
 import { DeleteCommentHook } from "../../Hooks/DeleteComment.hook";
+import toast from "react-hot-toast";
 
 const PostPage = () => {
   const { id } = useParams();
@@ -21,6 +22,9 @@ const PostPage = () => {
     const fetchData = async () => {
       try {
         const post = await useGetPost(id);
+        if(!post){
+          return toast.error("Post Not Found");
+        }
         setData(post);
       } catch (error) {
         console.log("Error in PostPage", error);
