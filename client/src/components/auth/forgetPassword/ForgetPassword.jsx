@@ -6,20 +6,20 @@ const ForgetPassword = () => {
   const [email, setEmail] = useState("");
   const [sent, setSent] = useState(false);
   const [otp, setOtp] = useState("");
-  const { SendOTP, VerifyOtp } = ForgetPasswordHook();
-
+  const { SendOTP, VerifyOtp, loading } = ForgetPasswordHook();
 
   const handleSendOTP = async (e) => {
     e.preventDefault();
     const success = SendOTP(email);
-    setSent(success);
+    const data = await success;
+    // console.log(data);
+    setSent(data);
   };
-
 
   const handleVerify = async (e) => {
     e.preventDefault();
     VerifyOtp(email, otp);
-  }
+  };
   return (
     <div className="w-screen h-screen flex justify-center items-center">
       <div className="flex flex-col gap-2 justify-center items-center w-full">
@@ -29,7 +29,6 @@ const ForgetPassword = () => {
           </h1>
         </div>
         <div className="rounded-3xl flex flex-col justify-center items-center md:w-1/2 w-full p-3 gap-4">
-          
           <form className="flex flex-col gap-1 w-2/3">
             <label className="label">Email:</label>
             <input
@@ -55,8 +54,19 @@ const ForgetPassword = () => {
             >
               Let's <span className="text-secondary"> Login</span>
             </Link>
-            <button className="btn btn-outline lg:text-xl" disabled={sent} onClick={handleSendOTP}>Send OTP</button>
-            <button className="btn lg:text-xl my-3" disabled={!sent} onClick={handleVerify}>
+            <button
+              className="btn btn-outline lg:text-xl"
+              disabled={sent || loading}
+              onClick={handleSendOTP}
+            >
+              {loading && <div className="loading loading-spinner"></div>}
+              {sent ? "OTP Sent" : "Send OTP"}
+            </button>
+            <button
+              className="btn lg:text-xl my-3"
+              disabled={!sent}
+              onClick={handleVerify}
+            >
               Verify
             </button>
           </form>
