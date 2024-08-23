@@ -2,6 +2,10 @@
 
 This is a social media project built using the MERN (MongoDB, Express.js, React.js, Node.js) stack. It aims to provide users with a platform to connect, share, and interact with each other.
 
+## Credits
+
+- Aritra2911
+
 ## Features
 
 - User authentication and authorization
@@ -50,3 +54,4 @@ Contributions are welcome! If you find any bugs or have suggestions for new feat
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
+
