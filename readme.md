@@ -1,10 +1,10 @@
-# Social Media Project (MERN Stack)
+
 
 This is a social media project built using the MERN (MongoDB, Express.js, React.js, Node.js) stack. It aims to provide users with a platform to connect, share, and interact with each other.
 
 ## Credits
 
-- Aritra2911
+- [Aritra2911](https://github.com/Aritra2911)
 
 ## Features
 
@@ -15,7 +15,7 @@ This is a social media project built using the MERN (MongoDB, Express.js, React.
 - Like and comment functionality on posts
 - Real-time notifications for new interactions
 - Search functionality to find other users and posts
-- Messaging system for private conversations
+- Messaging system for private conversations$SELECTION_PLACEHOLDER$
 
 ## Installation
 
@@ -23,18 +23,18 @@ This is a social media project built using the MERN (MongoDB, Express.js, React.
 2. Navigate to the project directory: `cd social-media-project-mern`
 3. Install dependencies: `npm run setup`
 4. Set up environment variables:
-    - Create a `.env` file in the root directory
-    - Add the following variables:
-      ```
-      MONGODB_URI=your-mongodb-uri
-      JWT_SECRET=your-jwt-secret
-      PORT=your-prefered-port
-      SENDER_MAIL=mail-id-for-sending-otps
-      MAIL_KEY=mail-application-key
-      CLOUDINARY_CLOUD_NAME=your-cloudinary-cloud-name
-      CLOUDINARY_API_KEY=your-cloudinary-api-key
-      CLOUDINARY_API_SECRET=your-cloudinary-api-secret
-      ```
+  - Create a `.env` file in the root directory
+  - Add the following variables:
+    ```
+    MONGODB_URI=your-mongodb-uri
+    JWT_SECRET=your-jwt-secret
+    PORT=your-prefered-port
+    SENDER_MAIL=mail-id-for-sending-otps
+    MAIL_KEY=mail-application-key
+    CLOUDINARY_CLOUD_NAME=your-cloudinary-cloud-name
+    CLOUDINARY_API_KEY=your-cloudinary-api-key
+    CLOUDINARY_API_SECRET=your-cloudinary-api-secret
+    ```
 5. Start the client and server: `npm start`
 
 ## Technologies Used
@@ -54,4 +54,3 @@ Contributions are welcome! If you find any bugs or have suggestions for new feat
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
-
